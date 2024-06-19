@@ -1,83 +1,39 @@
 import React, { useState } from 'react';
-import { MdAddCard } from "react-icons/md";
 import { useDispatch } from 'react-redux';
-import { addValue } from './Redux/Mainslice';
+import { Edittask } from './Redux/Mainslice';
 
-function Input() {
-
-    const generateFourDigitUniqueId = () => {
-        const min = 1000; 
-        const max = 9999; 
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      };
-
-    const [formData, setFormData] = useState({
-      taskName: '',
-      description: '',
-      date: '',
-      status: 'Pending',
-    });
-
-    const handleInputChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
+function Edittaskcom({ showModal, setShowModal, value }) {
     const dispatch = useDispatch();
+    const [taskName, setTaskName] = useState(value.taskName);
+    const [description, setDescription] = useState(value.description);
+    const [date, setDate] = useState(value.date);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const newTask = {
-            ...formData,
-            id: generateFourDigitUniqueId(),
+        const updatedTask = {
+            id: value.id, 
+            taskName: taskName,
+            description: description,
+            date: date,
         };
-        dispatch(addValue(newTask));
-      
-        setFormData({
-            taskName: '',
-            description: '',
-            date: '',
-            status: 'Pending',
-        });
-        closeModal();
-        console.log(newTask, 'submitted form');
-    };
-
-    const [showModal, setShowModal] = useState(false);
-
-    const handleButtonClick = () => {
-        setShowModal(true);
-    };
-
-    const closeModal = () => {
+        dispatch(Edittask(updatedTask)); 
         setShowModal(false);
     };
 
     return (
         <div>
-            <div className="flex items-center text-center justify-center p-4 mt-10">
-                <button
-                    className="font-bold text-white rounded-xl p-3 px-10 focus:outline-none focus:border-none flex items-center bg-transparent border-transparent"
-                    onClick={handleButtonClick}
-                    style={{border:'2px solid'}}
-                >
-                    <span className="flex items-center">
-                        New Task <MdAddCard className="ml-2" />
-                    </span>
-                </button>
-            </div>
-
             {showModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-8 rounded-lg bg-opacity-90 rounded-3xl">
-                        <h2 className="text-2xl font-bold mb-4 text-center">New Task</h2>
+                    <div className="bg-yellow-200 p-8 rounded-lg bg-opacity-90 rounded-3xl">
+                        <h2 className="text-2xl font-bold mb-4 text-center">Edit Task</h2>
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
                                 <label className="block text-gray-700 text-sm font-bold mb-2">Task Name</label>
                                 <input
                                     type="text"
                                     name="taskName"
-                                    value={formData.taskName}
-                                    onChange={handleInputChange}
+                                    value={taskName}
+                                    onChange={(e) => setTaskName(e.target.value)}
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     placeholder="Enter task name"
                                 />
@@ -86,8 +42,8 @@ function Input() {
                                 <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
                                 <textarea
                                     name="description"
-                                    value={formData.description}
-                                    onChange={handleInputChange}
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                     placeholder="Enter description"
                                 />
@@ -97,8 +53,8 @@ function Input() {
                                 <input
                                     type="date"
                                     name="date"
-                                    value={formData.date}
-                                    onChange={handleInputChange}
+                                    value={date}
+                                    onChange={(e) => setDate(e.target.value)}
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 />
                             </div>
@@ -106,7 +62,7 @@ function Input() {
                                 <button
                                     type="button"
                                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                    onClick={closeModal}
+                                    onClick={() => setShowModal(false)}
                                 >
                                     Close
                                 </button>
@@ -114,7 +70,7 @@ function Input() {
                                     type="submit"
                                     className="ml-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                 >
-                                    Add Task
+                                    Save Changes
                                 </button>
                             </div>
                         </form>
@@ -125,4 +81,4 @@ function Input() {
     );
 }
 
-export default Input;
+export default Edittaskcom;
